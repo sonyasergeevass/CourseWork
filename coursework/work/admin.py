@@ -42,7 +42,7 @@ class OrdersAdmin(admin.ModelAdmin):
 
 
 class OrderItemsAdmin(admin.ModelAdmin):
-    list_display = ('oi_order', 'oi_product', 'oi_amount')
+    list_display = ('oi_id', 'oi_order', 'oi_product', 'oi_amount')
 
 
 admin.site.register(Customers, CustomersAdmin)
