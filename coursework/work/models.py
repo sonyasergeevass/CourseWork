@@ -17,14 +17,12 @@ class Customers(models.Model):
                                          null=True, blank=True)
     customer_surename = models.CharField(verbose_name="Отчество",
                                          max_length=50, null=True, blank=True)
-    customer_email = models.EmailField(verbose_name="Почта", unique=True,
-                                       null=True, blank=True)
+    customer_email = models.EmailField(verbose_name="Почта", max_length=100,
+                                       unique=True)
     customer_phone = models.CharField(verbose_name="Телефон", max_length=15,
                                       null=True, blank=True)
     customer_datebirth = models.DateField(verbose_name="Дата рождения",
                                           null=True, blank=True)
-    customer_login = models.CharField(verbose_name="Логин", max_length=100,
-                                      unique=True)
     customer_password = models.CharField(verbose_name="Пароль", max_length=100,
                                          unique=True)
     customer_photo = models.TextField(verbose_name="Фотография", null=True,

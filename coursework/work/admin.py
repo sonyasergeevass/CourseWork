@@ -9,7 +9,7 @@ from .models import Customers, Addresses, Status, Categories, Products, \
 class CustomersAdmin(admin.ModelAdmin):
     list_display = (
         'customer_id', 'customer_name', 'customer_lastname', 'customer_email',
-        'customer_phone', 'customer_datebirth', 'customer_login')
+        'customer_phone', 'customer_datebirth')
 
 
 class AddressesAdmin(admin.ModelAdmin):
