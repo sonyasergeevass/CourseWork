@@ -1,0 +1,19 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block title %} aicen {% endblock %}
+{% block content %}
+{% include 'header.html' %}
+<div class="custom-content">
+    <div class="products">
+        {% for product in products %}
+        <div class="product">
+            <img src="{{ product.prod_photo }}" alt="{{ product.prod_name }}">
+            <div class="product-info">
+                <p>{{ product.prod_name }}</p>
+                <p>Цена: ${{ product.prod_sell_price }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
