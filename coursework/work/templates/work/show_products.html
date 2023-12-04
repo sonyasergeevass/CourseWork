@@ -4,13 +4,14 @@
 {% block content %}
 {% include 'header.html' %}
 <div class="custom-content">
+    <h1>Популярное</h1>
     <div class="products">
         {% for product in products %}
         <div class="product">
             <img src="{{ product.prod_photo }}" alt="{{ product.prod_name }}">
             <div class="product-info">
                 <p>{{ product.prod_name }}</p>
-                <p>Цена: ${{ product.prod_sell_price }}</p>
+                <p>Цена: {{ product.prod_sell_price }}</p>
             </div>
         </div>
         {% endfor %}
