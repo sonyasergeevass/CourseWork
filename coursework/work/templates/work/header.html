@@ -1,17 +1,43 @@
-<header>
-    <nav>
-        <button>Войти</button>
-        <button>Корзина</button>
-    </nav>
-</header>
 
 <div class="custom-content">
+    <header>
+        <nav>
+            <button>Войти</button>
+            <button>Корзина</button>
+        </nav>
+    </header>
     <div class="search-bar">
-        <input type="text" placeholder="Поиск товаров">
         <ul class="categories">
-            <li class="category">Категория 1</li>
-            <li class="category">Категория 2</li>
-            <li class="category">Категория 3</li>
+            {% for category in categories %}
+            <li class="category">{{category.category_name}}</li>
+            {% endfor %}
         </ul>
+        <form id="search-form" method="get" action="{% url 'search_products' %}">
+            {% csrf_token %}
+            <input type="text" id="q" name="q" placeholder="Поиск товаров">
+            <button type="submit">Поиск</button>
+        </form>
+        <div id="search-results"></div>
     </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#q').on('input', function() {
+            var query = $(this).val();
+            if (query.length >= 2) {
+                $.ajax({
+                    type: 'GET',
+                    url: '/search/',  // Замените на свой URL-путь к представлению поиска
+                    data: {'query': query,'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()},
+                    success: function(data) {
+                        $('#search-results').html(data);
+                    }
+                });
+            } else {
+                $('#search-results').html('');
+            }
+        });
+    });
+</script>

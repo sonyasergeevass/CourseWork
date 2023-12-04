@@ -28,6 +28,9 @@ class Customers(models.Model):
     customer_photo = models.TextField(verbose_name="Фотография", null=True,
                                       blank=True)
 
+    def __str__(self):
+        return f"{self.customer_lastname} {self.customer_name}"
+
 
 class Addresses(models.Model):
     """Addresses model"""
@@ -40,7 +43,8 @@ class Addresses(models.Model):
 
     address_id = models.AutoField(primary_key=True)
     ad_customer = models.ForeignKey('Customers', on_delete=models.RESTRICT,
-                                    db_column='ad_customer')
+                                    db_column='ad_customer',
+                                    verbose_name='ФИО покупателя')
     ad_country = models.CharField(verbose_name="Страна", max_length=100)
     ad_region = models.CharField(verbose_name="Регион/край", max_length=100)
     ad_city = models.CharField(verbose_name="Город", max_length=100)
@@ -66,6 +70,9 @@ class Status(models.Model):
     status_name = models.CharField(verbose_name="Статус заказа", max_length=20,
                                    unique=True)
 
+    def __str__(self):
+        return f"{self.status_name}"
+
 
 class Categories(models.Model):
     """Categories model"""
@@ -79,6 +86,9 @@ class Categories(models.Model):
     category_id = models.AutoField(primary_key=True)
     category_name = models.CharField(verbose_name="Категория товара",
                                      max_length=70, unique=True)
+
+    def __str__(self):
+        return f"{self.category_name}"
 
 
 class Products(models.Model):
@@ -100,7 +110,8 @@ class Products(models.Model):
     prod_amount = models.IntegerField(verbose_name="Количество товара",
                                       null=True, blank=True, default=0)
     prod_category = models.ForeignKey('Categories', on_delete=models.RESTRICT,
-                                      db_column='prod_category')
+                                      db_column='prod_category',
+                                      verbose_name='Категория товара')
     prod_sell_price = models.DecimalField(verbose_name="Цена продажи",
                                           max_digits=10, decimal_places=2,
                                           default=0.00)
@@ -108,9 +119,20 @@ class Products(models.Model):
                                             max_digits=10, decimal_places=2,
                                             default=0.00)
 
-    def __description__(self):
+    def __str__(self):
+        return f"{self.prod_name}"
+
+    def description(self):
         return self.prod_description[:40] + "..." \
             if self.prod_description else 'Описание отсутсвует'
+
+    description.short_description = 'Описание товара'
+
+    def link_on_photo(self):
+        return self.prod_photo[:40] + "..." \
+            if self.prod_photo else 'Ссылка отсутсвует'
+
+    link_on_photo.short_description = 'Ссылка на изображение'
 
 
 class Supplies(models.Model):
@@ -124,7 +146,8 @@ class Supplies(models.Model):
 
     supply_id = models.AutoField(primary_key=True)
     sup_product = models.ForeignKey('Products', on_delete=models.RESTRICT,
-                                    db_column='sup_product')
+                                    db_column='sup_product',
+                                    verbose_name='Название товара')
     sup_amount = models.IntegerField(verbose_name='Количество товара')
 
 
@@ -141,9 +164,14 @@ class Orders(models.Model):
     order_date = models.DateTimeField(verbose_name='Дата заказа',
                                       auto_now_add=True)
     ord_customer = models.ForeignKey('Customers', on_delete=models.RESTRICT,
-                                     db_column='ord_customer')
+                                     db_column='ord_customer',
+                                     verbose_name='Покупатель')
     ord_status = models.ForeignKey('Status', on_delete=models.RESTRICT,
-                                   db_column='ord_status')
+                                   db_column='ord_status',
+                                   verbose_name='Статус')
+
+    def __str__(self):
+        return f"{self.order_id}"
 
 
 class OrderItems(models.Model):
@@ -152,13 +180,16 @@ class OrderItems(models.Model):
     class Meta:
         db_table = 'order_items'
         managed = False
-        verbose_name = "Единица заказа"
-        verbose_name_plural = "Единицы заказов"
+        verbose_name = "Состав заказа"
+        verbose_name_plural = "Состав заказов"
         unique_together = ('oi_order', 'oi_product')
 
     oi_id = models.AutoField(primary_key=True)
     oi_order = models.ForeignKey('Orders', on_delete=models.RESTRICT,
-                                 db_column='oi_order')
+                                 db_column='oi_order',
+                                 verbose_name='Номер заказа')
     oi_product = models.ForeignKey('Products', on_delete=models.RESTRICT,
-                                   db_column='oi_product')
-    oi_amount = models.IntegerField(default=1)
+                                   db_column='oi_product',
+                                   verbose_name='Название товара')
+    oi_amount = models.IntegerField(default=1,
+                                    verbose_name='Количество единиц товара')
