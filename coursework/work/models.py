@@ -193,3 +193,17 @@ class OrderItems(models.Model):
                                    verbose_name='Название товара')
     oi_amount = models.IntegerField(default=1,
                                     verbose_name='Количество единиц товара')
+
+
+class ProfitReport(models.Model):
+    class Meta:
+        db_table = 'profit_report'
+        managed = False
+        verbose_name = "Прибыль"
+        verbose_name_plural = "Прибыль"
+
+    order_id = models.AutoField(primary_key=True)
+    day = models.IntegerField()
+    month = models.IntegerField()
+    year = models.IntegerField()
+    sum_profit = models.DecimalField(max_digits=10, decimal_places=2)
