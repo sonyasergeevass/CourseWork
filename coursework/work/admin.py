@@ -1,10 +1,15 @@
 from django.contrib import admin
 from .models import Customers, Addresses, Status, Categories, Products, \
     Supplies, Orders, OrderItems, ProfitReport
+
+
 # Register your models here.
 
 
 class CustomersAdmin(admin.ModelAdmin):
+    def has_add_permission(self, request, obj=None):
+        return False
+
     def has_delete_permission(self, request, obj=None):
         return False
 
@@ -14,6 +19,9 @@ class CustomersAdmin(admin.ModelAdmin):
 
 
 class AddressesAdmin(admin.ModelAdmin):
+    def has_add_permission(self, request, obj=None):
+        return False
+
     def has_delete_permission(self, request, obj=None):
         return False
 
@@ -26,6 +34,7 @@ class AddressesAdmin(admin.ModelAdmin):
 class StatusAdmin(admin.ModelAdmin):
     def has_delete_permission(self, request, obj=None):
         return False
+
     list_display = ('status_id', 'status_name')
 
 
@@ -45,14 +54,23 @@ class SuppliesAdmin(admin.ModelAdmin):
 
 
 class OrdersAdmin(admin.ModelAdmin):
+    def has_add_permission(self, request, obj=None):
+        return False
+
     def has_delete_permission(self, request, obj=None):
         return False
+
     list_display = ('ord_customer', 'order_date', 'ord_status')
+    list_filter = ['ord_status']
 
 
 class OrderItemsAdmin(admin.ModelAdmin):
+    def has_add_permission(self, request, obj=None):
+        return False
+
     def has_delete_permission(self, request, obj=None):
         return False
+
     list_display = ('oi_order', 'oi_product', 'oi_amount')
 
 
