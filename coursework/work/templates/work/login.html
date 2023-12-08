@@ -1,0 +1,173 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block title %} aicen {% endblock %}
+{% include 'header.html' %}
+{% block content %}
+<style>
+    .welcome {
+        text-align: center;
+        margin-top: 10%;
+        margin-bottom: 40px;
+        border-radius: 10px;
+        padding: 10px;
+        color: #272b38;
+        background-color: #ffc800;
+        width: 400px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .memories {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    .intro {
+        text-align: justify;
+        margin-top: 20px;
+        border-radius: 10px;
+        padding: 20px;
+        color: #272b38;
+        font-family: 'Bangers', sans-serif;
+        font-size: 25px;
+        line-height: 1.5;
+        margin-bottom: 20px;
+    }
+
+    .intro p:first-child {
+        margin-top: 0;
+    }
+
+    .sign-in {
+        text-align: center;
+        margin-top: 50px;
+    }
+
+    .btn {
+        display: inline-block;
+        margin: 10px;
+        padding: 10px 20px;
+        border-radius: 4px;
+        text-decoration: none;
+        font-weight: bold;
+        font-size: 16pt;
+        transition: background-color 0.3s;
+        width: 330px;
+        height: 70px;
+        line-height: 35px;
+        text-align: center;
+        color: #fff;
+    }
+
+    .btn-google {
+        background-color: #db4437;
+    }
+
+    .btn-vk {
+        background-color: #3399ff;
+    }
+
+    .button-icon {
+        vertical-align: middle;
+        margin-right: 10px;
+    }
+
+    /* Общий стиль для формы */
+    form {
+        max-width: 300px;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #fff;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Стиль для меток */
+    label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    /* Стиль для текстовых полей и паролей */
+    input[type="text"],
+    input[type="password"] {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        font-size: 16px;
+    }
+
+    /* Стиль для кнопки */
+    button {
+        display: block;
+        width: 100%;
+        margin-top: 14px;
+        padding: 8px; /* Уменьшаем отступы */
+        background-color: #007BFF;
+        color: #fff;
+        border: none;
+        border-radius: 3px;
+        font-size: 16px;
+        cursor: pointer;
+        height: 50px;
+    }
+
+    /* Стиль для CSRF-токена */
+    input[name="csrfmiddlewaretoken"] {
+        display: none;
+    }
+
+    /* Стиль для сообщений об ошибке */
+    .error-message {
+        text-align: center; /* Выравниваем текст по центру */
+        margin: 0 auto; /* Центрируем блок по горизонтали */
+        padding: 10px;
+        max-width: 400px; /* Устанавливаем максимальную ширину блока */
+        color: #ff0000; /* Красный цвет текста */
+        background-color: #ffe6e6; /* Светло-красный фон */
+        border: 1px solid #ff0000; /* Красная рамка */
+        border-radius: 5px;
+        margin-bottom: 10px;
+
+</style>
+
+<div class="welcome">
+    <h1>Войти</h1>
+</div>
+
+{% if form.errors %}
+<p class="error-message">Вы ввели неверную почту или пароль. Попробуйте
+    снова.</p>
+{% endif %}
+
+<!--{% if next %}-->
+<!--{% if user.is_authenticated %}-->
+<!--<p class="error-message">Your account doesn't have access to this page. To-->
+<!--    proceed,-->
+<!--    please login with an account that has access.</p>-->
+<!--{% else %}-->
+<!--<p class="error-message">Please login to see this page.</p>-->
+<!--{% endif %}-->
+<!--{% endif %}-->
+
+
+<div class="sign-in">
+    <form method="post" action="{% url 'login' %}">
+        {% csrf_token %}
+        <label for="customer_email">Почта:</label>
+        <input type="text" id="customer_email" name="customer_email" required>
+        <br>
+        <label for="customer_password">Пароль:</label>
+        <input type="password" id="customer_password" name="customer_password" required>
+        <br>
+        <button type="submit">Войти</button>
+        <button type="button" onclick="location.href='{% url 'register' %}'">
+            Регистрация
+        </button>
+    </form>
+</div>
+{% endblock %}

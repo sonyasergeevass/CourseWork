@@ -22,5 +22,9 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("", views.product_list, name="welcome"),
     path("search/", views.search_products, name="search_products"),
-    re_path(r'^report_builder/', include('report_builder.urls'))
+    re_path(r'^report_builder/', include('report_builder.urls')),
+    path('login/', views.login_page, name="login"),
+    path('register/', views.product_list, name="register"),
+    path('cart/', views.product_list, name="cart"),
+    # path('post/<int:product_id>/', views.search_products, name='post'),
 ]
