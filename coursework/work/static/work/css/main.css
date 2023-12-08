@@ -8,7 +8,7 @@ body {
 }
 
 header {
-    background-color: #333;
+    background-color: #fff;
     color: #fff;
     padding: 10px;
     text-align: right;
@@ -67,4 +67,21 @@ header {
 .custom-content .product-info {
     margin-top: 10px;
     text-align: center;
+}
+
+/* Стили для поисковой строки */
+#search-form {
+    display: flex;
+    align-items: center;
+    margin-right: auto;
+}
+
+#q {
+    padding: 5px;
+    margin-right: 10px;
+    border: 1px solid #ccc;
+}
+
+#search-results {
+    flex-grow: 1;
 }
