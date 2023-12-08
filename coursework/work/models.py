@@ -1,4 +1,6 @@
+from datetime import timedelta
 from django.db import models
+from django.utils import timezone
 
 
 class Customers(models.Model):
@@ -134,6 +136,9 @@ class Products(models.Model):
 
     link_on_photo.short_description = 'Ссылка на изображение'
 
+    # def get_absolute_url(self):
+    #     return reverse('post',kwargs={'post_id':self.pk})
+
 
 class Supplies(models.Model):
     """Supplies model"""
@@ -162,13 +167,21 @@ class Orders(models.Model):
 
     order_id = models.AutoField(primary_key=True)
     order_date = models.DateTimeField(verbose_name='Дата заказа',
-                                      auto_now_add=True)
+                                      editable=False)
     ord_customer = models.ForeignKey('Customers', on_delete=models.RESTRICT,
                                      db_column='ord_customer',
                                      verbose_name='Покупатель')
     ord_status = models.ForeignKey('Status', on_delete=models.RESTRICT,
                                    db_column='ord_status',
                                    verbose_name='Статус')
+
+    def save(self, *args, **kwargs):
+        # При создании заказа устанавливаем дату и времени,
+        # если она еще не установлена
+        if not self.order_id and not self.order_date:
+            self.order_date = timezone.now() + timedelta(hours=7)
+            self.order_date = self.order_date.strftime('%Y-%m-%d %H:%M:%S')
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.order_id}"
