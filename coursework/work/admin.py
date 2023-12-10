@@ -1,21 +1,21 @@
 from django.contrib import admin
-from .models import Customers, Addresses, Status, Categories, Products, \
+from .models import Addresses, Status, Categories, Products, \
     Supplies, Orders, OrderItems, ProfitReport
 
 
 # Register your models here.
 
 
-class CustomersAdmin(admin.ModelAdmin):
-    def has_add_permission(self, request, obj=None):
-        return False
-
-    def has_delete_permission(self, request, obj=None):
-        return False
-
-    list_display = (
-        'customer_lastname', 'customer_name', 'customer_surename',
-        'customer_email', 'customer_phone', 'customer_datebirth')
+# class CustomersAdmin(admin.ModelAdmin):
+#     def has_add_permission(self, request, obj=None):
+#         return False
+#
+#     def has_delete_permission(self, request, obj=None):
+#         return False
+#
+#     list_display = (
+#         'customer_lastname', 'customer_name', 'customer_surename',
+#         'customer_email', 'customer_phone', 'customer_datebirth')
 
 
 class AddressesAdmin(admin.ModelAdmin):
@@ -85,7 +85,7 @@ class ProfitReportsAdmin(admin.ModelAdmin):
     readonly_fields = ('day', 'month', 'year', 'order_id', 'sum_profit')
 
 
-admin.site.register(Customers, CustomersAdmin)
+# admin.site.register(Customers, CustomersAdmin)
 admin.site.register(Addresses, AddressesAdmin)
 admin.site.register(Status, StatusAdmin)
 admin.site.register(Categories, CategoriesAdmin)

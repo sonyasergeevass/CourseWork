@@ -44,7 +44,7 @@ class Addresses(models.Model):
         verbose_name_plural = "Адреса"
 
     address_id = models.AutoField(primary_key=True)
-    ad_customer = models.ForeignKey('Customers', on_delete=models.RESTRICT,
+    ad_customer = models.ForeignKey('users.User', on_delete=models.RESTRICT,
                                     db_column='ad_customer',
                                     verbose_name='ФИО покупателя')
     ad_country = models.CharField(verbose_name="Страна", max_length=100)
