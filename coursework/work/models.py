@@ -168,7 +168,7 @@ class Orders(models.Model):
     order_id = models.AutoField(primary_key=True)
     order_date = models.DateTimeField(verbose_name='Дата заказа',
                                       editable=False)
-    ord_customer = models.ForeignKey('Customers', on_delete=models.RESTRICT,
+    ord_customer = models.ForeignKey('users.User', on_delete=models.RESTRICT,
                                      db_column='ord_customer',
                                      verbose_name='Покупатель')
     ord_status = models.ForeignKey('Status', on_delete=models.RESTRICT,
