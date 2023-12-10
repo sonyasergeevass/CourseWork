@@ -1,12 +1,7 @@
-from django.contrib.auth import authenticate, login
-from django.shortcuts import render, redirect
-from django.contrib import messages
-
+from django.shortcuts import render
 from .models import Products, Categories
 
 
-# def welcome(request):
-#     return render(request, 'main.html')
 def convert_to_direct_link(gdrive_url):
     file_id = gdrive_url.split('/d/')[1].split('/view')[0]
     return f'https://drive.google.com/uc?id={file_id}'
@@ -28,23 +23,6 @@ def product_list(request):
     categories = categories_list()
     return render(request, 'show_products.html',
                   {'products': products, 'categories': categories})
-
-
-def login_page(request):
-    if request.method == 'POST':
-        customer_email = request.POST.get('customer_email')
-        customer_password = request.POST.get('customer_password')
-
-        user = authenticate(request, username=customer_email,
-                            password=customer_password)
-
-        if user:
-            login(request, user)
-            return redirect('welcome')
-        else:
-            messages.error(request, 'Неверно')
-
-    return render(request, 'login.html')
 
 
 def search_products(request):
