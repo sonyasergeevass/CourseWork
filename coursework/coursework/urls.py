@@ -25,9 +25,6 @@ urlpatterns = [
     path("users/", include('users.urls')),
     path("search/", views.search_products, name="search_products"),
     re_path(r'^report_builder/', include('report_builder.urls')),
-    # path('login/', views.login_page, name="login"),
     path('cart/', views.product_list, name="cart"),
-    # path('logout/', views.product_list, name="profile"),
-    # path('users/',include(users.urls)),
-    # path('post/<int:product_id>/', views.search_products, name='post'),
+
 ]
