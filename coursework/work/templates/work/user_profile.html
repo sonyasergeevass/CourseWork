@@ -1,0 +1,12 @@
+{% load static %}
+{% block content %}
+{% include 'header.html' %}
+<h1>Пользователь</h1>
+<div class="user">
+   <h2>{{ user.username }}</h2>
+   <p>Email: {{ user.email }}</p>
+   <p>First Name: {{ user.first_name }}</p>
+   <p>Last Name: {{ user.last_name }}</p>
+     <a href="{% url 'logout' %}">Выйти</a>
+</div>
+{% endblock %}
