@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "work",
     'report_builder',
     'users',
+    'cart',
 
 ]
 
@@ -128,7 +129,9 @@ USE_TZ = True
 AUTH_USER_MODEL = 'users.User'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
-# AUTH_USER_MODEL = 'work.Customers'
+
+CART_SESSION_ID = 'cart'
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
