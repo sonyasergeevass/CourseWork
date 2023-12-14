@@ -7,7 +7,7 @@
         {% else %}
         <a href="{% url 'login' %}">Войти</a>
         {% endif %}
-        <a href="{% url 'cart' %}">Корзина</a>
+        <a href="{% url 'cart:cart_detail' %}">Корзина</a>
     </header>
     <div class="search-bar">
         <ul class="categories">
