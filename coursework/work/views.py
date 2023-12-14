@@ -1,12 +1,16 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Products, Categories
+from cart.forms import CartAddProductForm
 
 
 def product_detail(request, product_id):
     product = get_object_or_404(Products, pk=product_id)
+    cart_product_form = CartAddProductForm()
     if product.prod_photo:
         product.prod_photo = convert_to_direct_link(product.prod_photo)
-    return render(request, 'product_detail.html', {'product': product})
+    return render(request, 'product_detail.html',
+                  {'product': product,
+                   'cart_product_form': cart_product_form})
 
 
 def category_products(request, category_id):
