@@ -1,5 +1,6 @@
 from datetime import timedelta
 from django.db import models
+from django.urls import reverse
 from django.utils import timezone
 
 
@@ -136,8 +137,8 @@ class Products(models.Model):
 
     link_on_photo.short_description = 'Ссылка на изображение'
 
-    # def get_absolute_url(self):
-    #     return reverse('post',kwargs={'post_id':self.pk})
+    def get_absolute_url(self):
+        return reverse('product_detail', kwargs={'product_id': self.pk})
 
 
 class Supplies(models.Model):
