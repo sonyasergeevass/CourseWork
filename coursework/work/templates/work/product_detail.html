@@ -1,0 +1,11 @@
+{% load static %}
+{% block content %}
+<div class="custom-content">
+    <div class="products">
+        <h1>{{ product.prod_name }}</h1>
+        <img src="{{ product.prod_photo }}" alt="{{ product.prod_name }}" width="270" height="290">
+        <p>{{ product.prod_description }}</p>
+        <p>Цена: {{ product.prod_sell_price }}</p>
+    </div>
+</div>
+{% endblock %}

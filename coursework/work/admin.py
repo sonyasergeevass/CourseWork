@@ -50,6 +50,7 @@ class ProductsAdmin(admin.ModelAdmin):
         'prod_name', 'description', 'image_show',
         'prod_amount', 'prod_category', 'prod_sell_price', 'prod_supply_price')
     search_fields = ["prod_name"]
+    list_editable = ["prod_sell_price", "prod_supply_price"]
 
     def image_show(self, obj):
         r = convert_to_direct_link(obj.prod_photo)

@@ -1,5 +1,24 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from .models import Products, Categories
+
+
+def product_detail(request, product_id):
+    product = get_object_or_404(Products, pk=product_id)
+    if product.prod_photo:
+        product.prod_photo = convert_to_direct_link(product.prod_photo)
+    return render(request, 'product_detail.html', {'product': product})
+
+
+def category_products(request, category_id):
+    categories = categories_list()
+    category = get_object_or_404(Categories, pk=category_id)
+    products = Products.objects.filter(prod_category=category)
+    for product in products:
+        if product.prod_photo:
+            product.prod_photo = convert_to_direct_link(product.prod_photo)
+    return render(request, 'category_products.html',
+                  {'category': category, 'products': products,
+                   'categories': categories})
 
 
 def convert_to_direct_link(gdrive_url):
