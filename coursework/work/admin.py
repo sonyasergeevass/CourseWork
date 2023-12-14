@@ -1,6 +1,9 @@
 from django.contrib import admin
+from django.utils.safestring import mark_safe
+
 from .models import Addresses, Status, Categories, Products, \
     Supplies, Orders, OrderItems, ProfitReport
+from .views import convert_to_direct_link
 
 
 # Register your models here.
@@ -44,9 +47,17 @@ class CategoriesAdmin(admin.ModelAdmin):
 
 class ProductsAdmin(admin.ModelAdmin):
     list_display = (
-        'prod_name', 'description', 'link_on_photo',
+        'prod_name', 'description', 'image_show',
         'prod_amount', 'prod_category', 'prod_sell_price', 'prod_supply_price')
     search_fields = ["prod_name"]
+
+    def image_show(self, obj):
+        r = convert_to_direct_link(obj.prod_photo)
+        if r:
+            return mark_safe("<img src='{}' width='60'/>".format(r))
+        return "None"
+
+    image_show.__name__ = "Картинка"
 
 
 class SuppliesAdmin(admin.ModelAdmin):

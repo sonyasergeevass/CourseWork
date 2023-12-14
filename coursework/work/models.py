@@ -107,7 +107,7 @@ class Products(models.Model):
                                  max_length=100, unique=True)
     prod_description = models.TextField(verbose_name="Описание товара",
                                         null=True, blank=True)
-    prod_photo = models.TextField(verbose_name="Ссылка на фото товара",
+    prod_photo = models.TextField(verbose_name="Изображение товара",
                                   null=True, blank=True)
     prod_amount = models.IntegerField(verbose_name="Количество товара",
                                       null=True, blank=True, default=0)
@@ -132,7 +132,7 @@ class Products(models.Model):
 
     def link_on_photo(self):
         return self.prod_photo[:40] + "..." \
-            if self.prod_photo else 'Ссылка отсутсвует'
+            if self.prod_photo else 'Ссылка отсутствует'
 
     link_on_photo.short_description = 'Ссылка на изображение'
 
