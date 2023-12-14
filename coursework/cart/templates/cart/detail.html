@@ -1,0 +1,55 @@
+{% extends "work/main.html" %}
+{% load static %}
+{% block title %}
+Your shopping cart
+{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="https://unpkg.com/mvp.css">
+<h1>Корзина</h1>
+{% if cart %}
+    <table class="cart">
+        <thead>
+        <tr>
+            <th>Изображение</th>
+            <th>Товар</th>
+            <th>Количество</th>
+            <th>Удалить</th>
+            <th>Цена за штуку</th>
+            <th>Цена</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for item in cart %}
+        {% with product=item.product %}
+        <tr>
+            <td>
+                <a href="{{ product.get_absolute_url }}">
+                    <img src="{{ item.photo }} "
+                         alt="{{ product.prod_name }}" width="170" height="180">
+                </a>
+            </td>
+            <td>{{ product.prod_name }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>
+                <a href="{% url 'cart:cart_remove' product.product_id %}">Удалить</a>
+            </td>
+            <td class="num">{{ item.price }}</td>
+            <td class="num">{{ item.total_price }}</td>
+        </tr>
+        {% endwith %}
+        {% endfor %}
+        <tr class="total">
+            <td>Всего</td>
+            <td colspan="4"></td>
+            <td class="num">{{ cart.get_total_price }}</td>
+        </tr>
+        </tbody>
+    </table>
+    <p class="text-right">
+        <a href="{% url 'welcome' %}" class="button light">Продолжить покупки</a>
+        <a href="#" class="button">Заказать</a>
+    </p>
+{% else %}
+    <p>Ваша корзина пуста. <a href="{% url 'welcome' %}">Вернуться к покупкам</a>.</p>
+{% endif %}
+{% endblock %}
