@@ -6,6 +6,11 @@
         <img src="{{ product.prod_photo }}" alt="{{ product.prod_name }}" width="270" height="290">
         <p>{{ product.prod_description }}</p>
         <p>Цена: {{ product.prod_sell_price }}</p>
+        <form action="{% url 'cart:cart_add' product.product_id %}" method="post">
+                    {{ cart_product_form }}
+                    {% csrf_token %}
+                    <input type="submit" value="В корзину">
+        </form>
     </div>
 </div>
 {% endblock %}
