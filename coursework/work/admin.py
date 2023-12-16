@@ -65,25 +65,27 @@ class SuppliesAdmin(admin.ModelAdmin):
     list_display = ('sup_product', 'sup_amount')
 
 
-class OrdersAdmin(admin.ModelAdmin):
-    def has_add_permission(self, request, obj=None):
-        return False
+class OrderItemsInline(admin.TabularInline):
+    # def has_add_permission(self, request, obj=None):
+    #     return False
+    #
+    # def has_delete_permission(self, request, obj=None):
+    #     return False
 
-    def has_delete_permission(self, request, obj=None):
-        return False
+    model = OrderItems
+    list_display = ('oi_order', 'oi_product', 'oi_amount')
+
+
+class OrdersAdmin(admin.ModelAdmin):
+    # def has_add_permission(self, request, obj=None):
+    #     return False
+    #
+    # def has_delete_permission(self, request, obj=None):
+    #     return False
 
     list_display = ('ord_customer', 'order_date', 'ord_status')
     list_filter = ['ord_status']
-
-
-class OrderItemsAdmin(admin.ModelAdmin):
-    def has_add_permission(self, request, obj=None):
-        return False
-
-    def has_delete_permission(self, request, obj=None):
-        return False
-
-    list_display = ('oi_order', 'oi_product', 'oi_amount')
+    inlines = [OrderItemsInline]
 
 
 class ProfitReportsAdmin(admin.ModelAdmin):
@@ -104,5 +106,5 @@ admin.site.register(Categories, CategoriesAdmin)
 admin.site.register(Products, ProductsAdmin)
 admin.site.register(Supplies, SuppliesAdmin)
 admin.site.register(Orders, OrdersAdmin)
-admin.site.register(OrderItems, OrderItemsAdmin)
+# admin.site.register(OrderItems, OrderItemsAdmin)
 admin.site.register(ProfitReport, ProfitReportsAdmin)
