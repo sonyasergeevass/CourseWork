@@ -6,7 +6,7 @@ Your shopping cart
 {% block content %}
 <link rel="stylesheet" href="https://unpkg.com/mvp.css">
 <h1>Корзина</h1>
-{% if cart %}
+{% if cart_items %}
     <table class="cart">
         <thead>
         <tr>
@@ -19,35 +19,38 @@ Your shopping cart
         </tr>
         </thead>
         <tbody>
-        {% for item in cart %}
+        {% for item in cart_items %}
         {% with product=item.product %}
         <tr>
             <td>
                 <a href="{{ product.get_absolute_url }}">
-                    <img src="{{ item.photo }} "
+                    <img src="{{ item.photo_url }} "
                          alt="{{ product.prod_name }}" width="170" height="180">
                 </a>
             </td>
-            <td>{{ product.prod_name }}</td>
-            <td>{{ item.quantity }}</td>
+            <td>{{ product.item.oi_prod_name }}</td>
+            <td>{{ item.oi_amount }}</td>
             <td>
-                <a href="{% url 'cart:cart_remove' product.product_id %}">Удалить</a>
+                <a href="{% url 'cart:cart_remove' item.oi_product_id %}">Удалить</a>
             </td>
-            <td class="num">{{ item.price }}</td>
-            <td class="num">{{ item.total_price }}</td>
+            <td class="num">{{ item.oi_prod_name.prod_sell_price }}</td>
+            <td class="num">{{ item.total_price_for_item }}</td>
         </tr>
         {% endwith %}
         {% endfor %}
         <tr class="total">
             <td>Всего</td>
             <td colspan="4"></td>
-            <td class="num">{{ cart.get_total_price }}</td>
+            <td class="num">{{ total_price }}</td>
         </tr>
         </tbody>
     </table>
     <p class="text-right">
         <a href="{% url 'welcome' %}" class="button light">Продолжить покупки</a>
-        <a href="#" class="button">Заказать</a>
+        <form method="post" action="{% url 'cart:cart_place_order' %}">
+            {% csrf_token %}
+            <button type="submit" name="place_order">Заказать</button>
+        </form>
     </p>
 {% else %}
     <p>Ваша корзина пуста. <a href="{% url 'welcome' %}">Вернуться к покупкам</a>.</p>
