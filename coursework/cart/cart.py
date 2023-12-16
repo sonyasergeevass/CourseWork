@@ -56,11 +56,11 @@ class Cart(object):
         # получение объектов product и добавление их в корзину
         products = Products.objects.filter(product_id__in=product_ids)
         for product in products:
-            self.cart[str(product.product_id)]['product'] = product
+            self.cart[str(product.product_id)]['product'] = product.to_json()
 
         for item in self.cart.values():
-            item['price'] = Decimal(item['price'])
-            item['total_price'] = item['price'] * item['quantity']
+            item['total_price'] = str(
+                Decimal(item['price']) * item['quantity'])
             yield item
 
     def __len__(self):

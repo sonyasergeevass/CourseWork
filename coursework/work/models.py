@@ -137,6 +137,18 @@ class Products(models.Model):
 
     link_on_photo.short_description = 'Ссылка на изображение'
 
+    def convert(self, gdrive_url):
+        file_id = gdrive_url.split('/d/')[1].split('/view')[0]
+        return f'https://drive.google.com/uc?id={file_id}'
+
+    def to_json(self):
+        return {
+            'product_id': self.product_id,
+            'prod_name': self.prod_name,
+            'prod_sell_price': str(self.prod_sell_price),
+            'prod_photo': self.convert(str(self.prod_photo)),
+        }
+
     def get_absolute_url(self):
         return reverse('product_detail', kwargs={'product_id': self.pk})
 
