@@ -1,0 +1,46 @@
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="https://unpkg.com/mvp.css">
+<h1>Ваши заказы</h1>
+{% if orders_data %}
+{% for order in orders_data %}
+<p>Номер заказа: {{ order.order_id }}, Дата: {{order.order_date}}
+    Статус: {{ order.status }}</p>
+<table class="order">
+    <thead>
+    <tr>
+        <th>Изображение</th>
+        <th>Товар</th>
+        <th>Количество</th>
+        <th>Цена за штуку</th>
+        <th>Цена</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for item in order.items %}
+    <tr>
+        <td>
+            <a href="{{ item.product.get_absolute_url }}">
+                <img src="{{ item.prod_photo }} "
+                     alt="{{ item.prod_name }}" width="170" height="180">
+            </a>
+        </td>
+        <td>{{ item.product_name }}</td>
+        <td>{{ item.amount }}</td>
+        <td class="num">{{ item.price }}</td>
+        <td class="num">{{ item.total_price }}</td>
+    </tr>
+    {% endfor %}
+    <tr class="total">
+        <td>Всего</td>
+        <td colspan="4"></td>
+        <td class="num">{{ order.full_price }}</td>
+    </tr>
+    </tbody>
+</table>
+{% endfor %}
+{% else %}
+<p>Ваша корзина пуста. <a href="{% url 'welcome' %}">Вернуться к покупкам</a>.
+</p>
+{% endif %}
+{% endblock %}

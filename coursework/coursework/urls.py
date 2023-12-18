@@ -30,6 +30,7 @@ urlpatterns = [
          name='category_products'),
     path('product/<int:product_id>/', views.product_detail,
          name='product_detail'),
+    path("orders/", views.user_orders, name="user_orders"),
     path("search/", views.search_products, name="search_products"),
     re_path(r'^report_builder/', include('report_builder.urls')),
     # path('cart/', views.product_list, name="cart"),

@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Products, Categories
+from .models import Products, Categories, Orders, OrderItems
 from cart.forms import CartAddProductForm
 
 
@@ -46,6 +46,41 @@ def product_list(request):
     categories = categories_list()
     return render(request, 'show_products.html',
                   {'products': products, 'categories': categories})
+
+
+def user_orders(request):
+    current_user = request.user
+    orders = Orders.objects.filter(ord_customer=current_user).exclude(
+        ord_status__status_name='Временный').order_by('-order_date')
+
+    orders_data = []
+
+    for order in orders:
+        order_items = OrderItems.objects.filter(oi_order=order)
+        items_data = []
+        full_price = 0
+        for item in order_items:
+            items_data.append({
+                'product_name': item.oi_product.prod_name,
+                # Замените на поле, которое содержит название товара
+                'prod_photo': convert_to_direct_link(
+                    item.oi_product.prod_photo),
+                'price': item.oi_product.prod_sell_price,
+                'total_price': item.oi_product.prod_sell_price*item.oi_amount,
+                'amount': item.oi_amount
+            })
+            full_price += item.oi_product.prod_sell_price*item.oi_amount
+        orders_data.append({
+            'order_id': order.order_id,
+            'order_date': order.order_date,
+            # 'customer': order.ord_customer.username,
+            # Замените на поле, которое содержит информацию о покупателе
+            'status': order.ord_status.status_name,
+            # Замените на поле, которое содержит название статуса заказа
+            'items': items_data,
+            'full_price': full_price
+        })
+    return render(request, 'user_orders.html', {'orders_data': orders_data})
 
 
 def search_products(request):
