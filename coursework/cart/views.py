@@ -65,9 +65,9 @@ def cart_place_order(request):
         # Optionally, you can add a success message
         messages.success(request, 'Order placed successfully. Thank you!')
 
-        return render(request, 'cart/user_orders.html',
-                      {'success': messages.success})
-    else:
+    #     return render(request, 'user_orders.html',
+    #                   {'success': messages.success})
+    # else:
         # Handle non-POST requests or requests without 'place_order'
         # You might want to redirect to a different page or show an error
         # message
