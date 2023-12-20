@@ -1,5 +1,7 @@
 from datetime import timedelta
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.urls import reverse
 from django.utils import timezone
 
@@ -233,3 +235,24 @@ class ProfitReport(models.Model):
     month = models.IntegerField()
     year = models.IntegerField()
     sum_profit = models.DecimalField(max_digits=10, decimal_places=2)
+
+
+@receiver(post_save, sender=Supplies)
+def increase_product_quantity(sender, instance, created, **kwargs):
+    """Обновляет количество товара при добавлении поставки."""
+    if created:
+        product = instance.sup_product
+        product.prod_amount += instance.sup_amount
+        product.save()
+
+
+@receiver(post_save, sender=OrderItems)
+def reduce_product_quantity(sender, instance, created, **kwargs):
+    """Обновляет количество товара при добавлении заказа."""
+    if created:
+        status_name = instance.oi_order.ord_status.status_name
+        print(f"{status_name}")
+        if status_name != "Временный":
+            product = instance.oi_product
+            product.prod_amount -= instance.oi_amount
+            product.save()
