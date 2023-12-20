@@ -26,8 +26,9 @@ def category_products(request, category_id):
 
 
 def convert_to_direct_link(gdrive_url):
-    file_id = gdrive_url.split('/d/')[1].split('/view')[0]
-    return f'https://drive.google.com/uc?id={file_id}'
+    if gdrive_url:
+        file_id = gdrive_url.split('/d/')[1].split('/view')[0]
+        return f'https://drive.google.com/uc?id={file_id}'
 
 
 def categories_list():
