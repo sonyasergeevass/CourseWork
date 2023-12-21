@@ -7,14 +7,18 @@ from .forms import CartAddProductForm
 
 
 def convert_to_direct_link(gdrive_url):
-    file_id = gdrive_url.split('/d/')[1].split('/view')[0]
-    return f'https://drive.google.com/uc?id={file_id}'
+    if gdrive_url:
+        file_id = gdrive_url.split('/d/')[1].split('/view')[0]
+        return f'https://drive.google.com/uc?id={file_id}'
 
 
 @require_POST
 def cart_add(request, product_id):
-    cart = Cart(request.user)
-    form = CartAddProductForm(request.POST)
+    cart = Cart(request.user, request)
+    product = get_object_or_404(Products, pk=product_id)
+    max_quantity_value = product.prod_amount
+    form = CartAddProductForm(max_quantity1=max_quantity_value,
+                              data=request.POST)
     if form.is_valid():
         cd = form.cleaned_data
         cart.add(product_id=product_id, quantity=cd['quantity'])
@@ -23,14 +27,14 @@ def cart_add(request, product_id):
 
 
 def cart_remove(request, product_id):
-    cart = Cart(request.user)
+    cart = Cart(request.user, request)
     product = get_object_or_404(Products, product_id=product_id)
     cart.remove(product)
     return redirect('cart:cart_detail')
 
 
 def cart_detail(request):
-    cart = Cart(request.user)
+    cart = Cart(request.user, request)
     cart_items = cart.get_items()
     total_price = cart.get_total_price()
 
@@ -57,17 +61,20 @@ def cart_detail(request):
 
 def cart_place_order(request):
     if request.method == 'POST' and 'place_order' in request.POST:
-        cart = Cart(request.user)
+        cart = Cart(request.user, request)
         print(f'CAAAAAAAAAAAAART{cart}')
-        cart.place_order()
-        # cart.clear()  # Clear the cart after placing the order
+        try:
+            cart.place_order()
+            messages.success(request, 'Заказ создан. Спасибо!')
+        except ValueError as e:
+            messages.error(request, str(e))
+            # Добавляем сообщение об ошибке в случае нехватки товара
 
-        # Optionally, you can add a success message
-        messages.success(request, 'Order placed successfully. Thank you!')
-
-    #     return render(request, 'user_orders.html',
-    #                   {'success': messages.success})
-    # else:
+        # return render(request, 'user_orders.html',
+        #               {'success': messages.success})
+        return redirect(
+            'cart:cart_detail')
+    else:
         # Handle non-POST requests or requests without 'place_order'
         # You might want to redirect to a different page or show an error
         # message
