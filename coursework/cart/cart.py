@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.shortcuts import get_object_or_404
 from work.models import Products, Orders, OrderItems, Status
 from decimal import Decimal
@@ -5,8 +6,9 @@ from decimal import Decimal
 
 class Cart(object):
 
-    def __init__(self, user):
+    def __init__(self, user, request):
         self.user = user
+        self.request = request
 
     def add(self, product_id, quantity=1):
         """
@@ -67,6 +69,26 @@ class Cart(object):
         # Update the status of order items in the cart
         order = Orders.objects.get(ord_customer=self.user,
                                    ord_status__status_name="Временный")
+
+        insufficient_stock_found = False  # Флаг для отслеживания наличия
+        # товаров с недостаточным количеством
+
+        for item in self.get_items():
+            if item.oi_amount > item.oi_product.prod_amount:
+                item.oi_amount = item.oi_product.prod_amount
+                item.save()
+                messages.warning(self.request,
+                                 f"Недостаточно товара: "
+                                 f"{item.oi_product.prod_name}. Доступное "
+                                 f"количестов товара для заказа "
+                                 f"{item.oi_product.prod_amount}."
+                                 )
+                insufficient_stock_found = True
+
+        if insufficient_stock_found:
+            raise ValueError(
+                "Один или несколько товаров имеют недостаточное количество")
+
         order.ord_status = awaiting_payment_status
         print(f'{order.ord_status}, {order.order_id}')
         order.save()
