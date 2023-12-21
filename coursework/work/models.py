@@ -246,13 +246,17 @@ def increase_product_quantity(sender, instance, created, **kwargs):
         product.save()
 
 
-@receiver(post_save, sender=OrderItems)
+@receiver(post_save, sender=Orders)
 def reduce_product_quantity(sender, instance, created, **kwargs):
     """Обновляет количество товара при добавлении заказа."""
-    if created:
-        status_name = instance.oi_order.ord_status.status_name
-        print(f"{status_name}")
-        if status_name != "Временный":
-            product = instance.oi_product
-            product.prod_amount -= instance.oi_amount
-            product.save()
+    # if created:
+    try:
+        status_name = instance.ord_status.status_name
+        print(f"Status name: {status_name}")
+        if status_name == "Ожидает оплаты":
+            for order_item in OrderItems.objects.filter(oi_order=instance):
+                product = order_item.oi_product
+                product.prod_amount -= order_item.oi_amount
+                product.save()
+    except Exception as e:
+        print(f"Произошла ошибка: {e}")
