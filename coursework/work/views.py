@@ -5,12 +5,29 @@ from cart.forms import CartAddProductForm
 
 def product_detail(request, product_id):
     product = get_object_or_404(Products, pk=product_id)
-    cart_product_form = CartAddProductForm()
+    max_quantity = product.prod_amount
+    current_user = request.user
+    order_id = Orders.objects.filter(
+        ord_customer=current_user,
+        ord_status__status_name='Временный').first()
+
+    if order_id:
+        try:
+            order_item = OrderItems.objects.get(oi_order=order_id,
+                                                oi_product=product_id)
+            max_quantity -= order_item.oi_amount
+        except OrderItems.DoesNotExist:
+            pass
+
+    cart_product_form = CartAddProductForm(max_quantity,
+                                           initial={'quantity': 1})
     if product.prod_photo:
         product.prod_photo = convert_to_direct_link(product.prod_photo)
+
     return render(request, 'product_detail.html',
                   {'product': product,
-                   'cart_product_form': cart_product_form})
+                   'cart_product_form': cart_product_form,
+                   'max_quantity': max_quantity})
 
 
 def category_products(request, category_id):
