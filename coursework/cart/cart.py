@@ -73,6 +73,8 @@ class Cart(object):
         insufficient_stock_found = False  # Флаг для отслеживания наличия
         # товаров с недостаточным количеством
 
+        items_to_remove = []  # Список товаров для удаления из текущего заказа
+
         for item in self.get_items():
             if item.oi_amount > item.oi_product.prod_amount:
                 item.oi_amount = item.oi_product.prod_amount
@@ -84,14 +86,30 @@ class Cart(object):
                                  f"{item.oi_product.prod_amount}."
                                  )
                 insufficient_stock_found = True
+            elif item.oi_amount == 0:
+                items_to_remove.append(item)
 
         if insufficient_stock_found:
             raise ValueError(
                 "Один или несколько товаров имеют недостаточное количество")
 
-        order.ord_status = awaiting_payment_status
-        print(f'{order.ord_status}, {order.order_id}')
-        order.save()
+        if len(items_to_remove) != 0:
+            new_order = Orders.objects.create(
+                ord_customer=self.user,
+                ord_status=awaiting_payment_status)
+            for current_item in self.get_items():
+                if current_item not in items_to_remove:
+                    # Копируем товары из текущего заказа в новый заказ,
+                    # исключая те, у которых количество 0
+                    OrderItems.objects.create(
+                        oi_order=new_order,
+                        oi_product=current_item.oi_product,
+                        oi_amount=current_item.oi_amount)
+                    current_item.delete()
+        else:
+            order.ord_status = awaiting_payment_status
+            print(f'{order.ord_status}, {order.order_id}')
+            order.save()
 # class Cart(object):
 #
 #     def __init__(self, request):
