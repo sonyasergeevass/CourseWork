@@ -1,0 +1,121 @@
+{% extends "admin/change_list.html" %}
+{% load custom_filters %}
+{% block content_title %}
+    <h1> Profit </h1>
+{% endblock %}
+
+{% block result_list %}
+    <div class="results">
+    <table>
+
+    <thead>
+      <tr>
+        <th>
+          <div class="text">
+            <a href="#">Дата</a>
+          </div>
+        </th>
+          <th>
+          <div class="text">
+            <a href="#">Количество заказов</a>
+          </div>
+        </th>
+        <th>
+          <div class="text">
+            <a href="#">
+              <strong>Прибыль</strong>
+            </a>
+          </div>
+        </th>
+           <th>
+          <div class="text">
+            <a href="#">
+              <strong>Процент от всей прибыли</strong>
+            </a>
+          </div>
+        </th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for row in summary %}
+      <tr class="{% cycle 'row1' 'row2' %}">
+        <td>{{ row.order_date }}</td>
+          <td>{{ row.total }}</td>
+        <td>{{ row.sum_profit }}</td>
+           <td>
+          <strong>
+          {{ row.sum_profit | default:0 | percentof:summary_total.sum_profit }}
+          </strong>
+        </td>
+        <td>
+      </tr>
+      {% endfor %}
+    </tbody>
+    <tr style="font-weight:bold; border-top:2px solid #DDDDDD;">
+            <td> Всего </td>
+            <td> {{ summary_total.total }} </td>
+            <td> {{ summary_total.sum_profit | default:0 }} </td>
+            <td> 100% </td>
+        </tr>
+  </table>
+</div>
+
+<h2> Прибыль </h2>
+
+    <style>
+    .bar-chart {
+      display: flex;
+      justify-content: space-around;
+      height: 160px;
+      padding-top: 60px;
+      overflow: hidden;
+    }
+    .bar-chart .bar {
+        flex: 100%;
+        align-self: flex-end;
+        margin-right: 2px;
+        position: relative;
+        background-color: #79aec8;
+    }
+    .bar-chart .bar:last-child {
+        margin: 0;
+    }
+    .bar-chart .bar:hover {
+        background-color: #417690;
+    }
+
+    .bar-chart .bar .bar-tooltip {
+        position: relative;
+        z-index: 999;
+    }
+    .bar-chart .bar .bar-tooltip {
+        position: absolute;
+        top: -60px;
+        left: 50%;
+        transform: translateX(-50%);
+        text-align: center;
+        font-weight: bold;
+        opacity: 1;
+    }
+    /*.bar-chart .bar:hover .bar-tooltip {*/
+    /*    opacity: 1;*/
+    /*}*/
+    </style>
+
+    <div class="results">
+        <div class="bar-chart">
+        {% for x in summary_over_time %}
+            <div class="bar" style="height:{{ x.percent_of_total }}%">
+                <div class="bar-tooltip">
+                    {{x.total | default:0  }}<br>
+                    {{x.period | date:"d/m/Y"}}
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block pagination %}{% endblock %}
