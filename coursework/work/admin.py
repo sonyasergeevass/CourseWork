@@ -1,4 +1,6 @@
 from django.contrib import admin
+from django.db.models import Sum, DateTimeField, Count
+from django.db.models.functions import Trunc
 from django.utils.safestring import mark_safe
 
 from .models import Addresses, Status, Categories, Products, \
@@ -88,15 +90,80 @@ class OrdersAdmin(admin.ModelAdmin):
     inlines = [OrderItemsInline]
 
 
+def get_next_in_date_hierarchy(request, date_hierarchy):
+    if date_hierarchy + '__day' in request.GET:
+        return 'minute'
+
+    if date_hierarchy + '__month' in request.GET:
+        return 'day'
+
+    if date_hierarchy + '__year' in request.GET:
+        return 'week'
+
+    return 'week'
+
+
 class ProfitReportsAdmin(admin.ModelAdmin):
-    def has_add_permission(self, request):
-        return False
+    # def has_add_permission(self, request):
+    #     return False
+    #
+    # def has_delete_permission(self, request, obj=None):
+    #     return False
+    #
+    # list_display = ('day', 'month', 'year', 'sum_profit')
+    # readonly_fields = ('day', 'month', 'year', 'order_id', 'sum_profit')
 
-    def has_delete_permission(self, request, obj=None):
-        return False
+    change_list_template = 'admin/profit_report_list.html'
+    date_hierarchy = 'order_date'
 
-    list_display = ('day', 'month', 'year', 'sum_profit')
-    readonly_fields = ('day', 'month', 'year', 'order_id', 'sum_profit')
+    def changelist_view(self, request, extra_context=None):
+        response = super().changelist_view(
+            request,
+            extra_context=extra_context,
+        )
+
+        try:
+            qs = response.context_data['cl'].queryset
+        except (AttributeError, KeyError):
+            return response
+
+        metrics = {
+            'total': Count('order_id'),
+            'sum_profit': Sum('sum_profit'),
+        }
+        summary = list(
+            qs
+            .values('order_date')
+            .annotate(**metrics)
+            .order_by('-sum_profit')
+        )
+        response.context_data['summary'] = summary
+        response.context_data['summary_total'] = dict(
+            qs.aggregate(**metrics))
+
+        period = get_next_in_date_hierarchy(request, self.date_hierarchy)
+        response.context_data['period'] = period
+
+        summary_over_time = qs.annotate(
+            period=Trunc(
+                'order_date',
+                period,
+                output_field=DateTimeField(),
+            ),
+        ).values('period').annotate(total=Sum('sum_profit')).order_by('period')
+
+        response.context_data['summary_over_time'] = [{
+            'period': x['period'],
+            'total': x['total'] or 0,
+            'percent_of_total': format(
+                ((x['total'] or 0) / response.context_data['summary_total'][
+                    'sum_profit']) * 100
+                if response.context_data['summary_total'][
+                       'sum_profit'] != 0 else 0,
+                '.2f'),
+        } for x in summary_over_time]
+
+        return response
 
 
 # admin.site.register(Customers, CustomersAdmin)
