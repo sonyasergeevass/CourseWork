@@ -39,6 +39,7 @@ def cart_detail(request):
     total_price = cart.get_total_price()
 
     processed_cart_items = []
+    out_of_stock_items = []
     for item in cart_items:
         total_price_for_item = cart.get_total_price_for_item(item)
         processed_item = {
@@ -49,10 +50,23 @@ def cart_detail(request):
             'total_price_for_item': total_price_for_item
 
         }
-        processed_cart_items.append(processed_item)
+        if item.oi_amount > 0 and item.oi_product.prod_amount > 0:
+            processed_cart_items.append(processed_item)
+        elif item.oi_amount == 0 and item.oi_product.prod_amount == 0:
+            out_of_stock_items.append(processed_item)
+        elif item.oi_amount == 0 and item.oi_product.prod_amount > 0:
+            item.oi_amount = 1
+            item.save()
+            processed_item['oi_amount'] = item.oi_amount
+            processed_item[
+                'total_price_for_item'] = cart.get_total_price_for_item(item)
+            processed_cart_items.append(processed_item)
+        elif item.oi_amount > 0 and item.oi_product.prod_amount == 0:
+            processed_cart_items.append(processed_item)
 
     context = {
         'cart_items': processed_cart_items,
+        'out_of_stock_items': out_of_stock_items,
         'total_price': total_price,
     }
 
