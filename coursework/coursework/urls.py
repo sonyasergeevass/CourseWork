@@ -33,6 +33,7 @@ urlpatterns = [
     path("orders/", views.user_orders, name="user_orders"),
     path("search/", views.search_products, name="search_products"),
     re_path(r'^report_builder/', include('report_builder.urls')),
+    path('admin_tools_stats/', include('admin_tools_stats.urls'))
     # path('cart/', views.product_list, name="cart"),
 
 ]
