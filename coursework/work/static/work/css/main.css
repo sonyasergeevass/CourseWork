@@ -42,12 +42,12 @@ header {
 .custom-content .products {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
 }
 
 .custom-content .product {
     width: 23%;
     margin-bottom: 20px;
+    margin-left: 15px;
     padding: 10px;
     background-color: #fff;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
