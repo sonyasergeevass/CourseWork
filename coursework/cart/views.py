@@ -64,6 +64,7 @@ def cart_detail(request):
         elif item.oi_amount > 0 and item.oi_product.prod_amount == 0:
             processed_cart_items.append(processed_item)
 
+    total_price = cart.get_total_price()
     context = {
         'cart_items': processed_cart_items,
         'out_of_stock_items': out_of_stock_items,
