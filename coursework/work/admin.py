@@ -68,25 +68,29 @@ class SuppliesAdmin(admin.ModelAdmin):
 
 
 class OrderItemsInline(admin.TabularInline):
-    # def has_add_permission(self, request, obj=None):
-    #     return False
-    #
-    # def has_delete_permission(self, request, obj=None):
-    #     return False
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
 
     model = OrderItems
+    extra = 0
+    readonly_fields = ('oi_order', 'oi_product', 'oi_amount')
+    can_delete = False  # Запрещаем удаление элементов
     list_display = ('oi_order', 'oi_product', 'oi_amount')
 
 
 class OrdersAdmin(admin.ModelAdmin):
-    # def has_add_permission(self, request, obj=None):
-    #     return False
-    #
-    # def has_delete_permission(self, request, obj=None):
-    #     return False
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
 
     list_display = ('ord_customer', 'order_date', 'ord_status')
     list_filter = ['ord_status']
+    readonly_fields = ('ord_customer', 'order_date', 'ord_status')
     inlines = [OrderItemsInline]
 
 
@@ -104,12 +108,12 @@ def get_next_in_date_hierarchy(request, date_hierarchy):
 
 
 class ProfitReportsAdmin(admin.ModelAdmin):
-    # def has_add_permission(self, request):
-    #     return False
-    #
-    # def has_delete_permission(self, request, obj=None):
-    #     return False
-    #
+    def has_add_permission(self, request):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
     # list_display = ('day', 'month', 'year', 'sum_profit')
     # readonly_fields = ('day', 'month', 'year', 'order_id', 'sum_profit')
 
