@@ -106,6 +106,7 @@ class Cart(object):
                         oi_product=current_item.oi_product,
                         oi_amount=current_item.oi_amount)
                     current_item.delete()
+            order.delete()
         else:
             order.ord_status = awaiting_payment_status
             print(f'{order.ord_status}, {order.order_id}')
