@@ -123,6 +123,8 @@ class Products(models.Model):
     prod_supply_price = models.DecimalField(verbose_name="Цена поставки",
                                             max_digits=10, decimal_places=2,
                                             default=0.00)
+    prod_photo_thumbnail = models.TextField(verbose_name="Изображение товара",
+                                            null=True, blank=True)
 
     def __str__(self):
         return f"{self.prod_name}"
@@ -193,7 +195,10 @@ class Orders(models.Model):
     def save(self, *args, **kwargs):
         # При создании заказа устанавливаем дату и времени,
         # если она еще не установлена
-        if not self.order_id and not self.order_date:
+        if not self.order_id or (
+                self.ord_status.status_name == 'Ожидает оплаты' and
+                'ord_status' in kwargs.get(
+                'update_fields', [])):
             self.order_date = timezone.now() + timedelta(hours=7)
             self.order_date = self.order_date.strftime('%Y-%m-%d %H:%M:%S')
         super().save(*args, **kwargs)
@@ -235,6 +240,21 @@ class ProfitReport(models.Model):
     month = models.IntegerField()
     year = models.IntegerField()
     sum_profit = models.DecimalField(max_digits=10, decimal_places=2)
+    order_date = models.DateTimeField(editable=False)
+
+
+class SalesGraphic(models.Model):
+    class Meta:
+        db_table = 'sales_graphic'
+        managed = False
+        verbose_name = "Продажи"
+        verbose_name_plural = "Продажи"
+
+    order_id = models.AutoField(primary_key=True)
+    order_date = models.DateTimeField(editable=False)
+    prod_name = models.CharField()
+    category_name = models.CharField()
+    oi_amount = models.IntegerField()
 
 
 @receiver(post_save, sender=Supplies)
@@ -258,5 +278,22 @@ def reduce_product_quantity(sender, instance, created, **kwargs):
                 product = order_item.oi_product
                 product.prod_amount -= order_item.oi_amount
                 product.save()
+    except Exception as e:
+        print(f"Произошла ошибка: {e}")
+
+
+@receiver(post_save, sender=Products)
+def convert_photo_link_to_direct_link(sender, instance, created, **kwargs):
+    try:
+        if instance.prod_photo:
+            file_id = instance.prod_photo.split('/d/')[1].split('/view')[0]
+            instance.prod_photo = 'https://drive.google.com/uc?id=' + file_id
+        if instance.prod_photo_thumbnail:
+            file_id = (
+                instance.prod_photo_thumbnail.split('/d/')[1].split('/view'))[
+                0]
+            instance.prod_photo_thumbnail = (
+                    'https://drive.google.com/uc?id=' + file_id)
+        instance.save()
     except Exception as e:
         print(f"Произошла ошибка: {e}")
