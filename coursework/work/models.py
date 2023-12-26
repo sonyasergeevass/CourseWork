@@ -1,3 +1,4 @@
+import re
 from datetime import timedelta
 from django.db import models
 from django.db.models.signals import post_save
@@ -286,14 +287,21 @@ def reduce_product_quantity(sender, instance, created, **kwargs):
 def convert_photo_link_to_direct_link(sender, instance, created, **kwargs):
     try:
         if instance.prod_photo:
-            file_id = instance.prod_photo.split('/d/')[1].split('/view')[0]
-            instance.prod_photo = 'https://drive.google.com/uc?id=' + file_id
+            match = re.search(r'/d/([^/]+)/view', instance.prod_photo)
+            if match:
+                file_id = match.group(1)
+                instance.prod_photo = ('https://drive.google.com/uc?id=' +
+                                       file_id)
+                instance.save()
+
         if instance.prod_photo_thumbnail:
-            file_id = (
-                instance.prod_photo_thumbnail.split('/d/')[1].split('/view'))[
-                0]
-            instance.prod_photo_thumbnail = (
-                    'https://drive.google.com/uc?id=' + file_id)
-        instance.save()
+            match = re.search(r'/d/([^/]+)/view',
+                              instance.prod_photo_thumbnail)
+            if match:
+                file_id = match.group(1)
+                instance.prod_photo_thumbnail = (
+                        'https://drive.google.com/uc?id=' + file_id)
+                instance.save()
+
     except Exception as e:
         print(f"Произошла ошибка: {e}")
