@@ -36,8 +36,10 @@ class Cart(object):
         """
         Удаление товара из корзины.
         """
-        OrderItems.objects.filter(oi_order__ord_customer=self.user,
-                                  oi_product=product).delete()
+        OrderItems.objects.filter(
+            oi_order__ord_customer=self.user,
+            oi_product=product,
+            oi_order__ord_status__status_name="Временный").delete()
 
     def get_items(self):
         """
@@ -91,7 +93,7 @@ class Cart(object):
 
         if insufficient_stock_found:
             raise ValueError(
-                "Один или несколько товаров имеют недостаточное количество")
+                "Нажмите кнопку заказать еще раз")
 
         if len(items_to_remove) != 0:
             new_order = Orders.objects.create(
@@ -106,7 +108,6 @@ class Cart(object):
                         oi_product=current_item.oi_product,
                         oi_amount=current_item.oi_amount)
                     current_item.delete()
-            order.delete()
         else:
             order.ord_status = awaiting_payment_status
             print(f'{order.ord_status}, {order.order_id}')
