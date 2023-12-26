@@ -5,7 +5,6 @@ from django.utils.safestring import mark_safe
 
 from .models import Addresses, Status, Categories, Products, \
     Supplies, Orders, OrderItems, ProfitReport
-from .views import convert_to_direct_link
 
 
 # Register your models here.
@@ -55,7 +54,7 @@ class ProductsAdmin(admin.ModelAdmin):
     list_editable = ["prod_amount", "prod_sell_price", "prod_supply_price"]
 
     def image_show(self, obj):
-        r = convert_to_direct_link(obj.prod_photo)
+        r = obj.prod_photo_thumbnail
         if r:
             return mark_safe("<img src='{}' width='60'/>".format(r))
         return "None"
@@ -82,15 +81,15 @@ class OrderItemsInline(admin.TabularInline):
 
 
 class OrdersAdmin(admin.ModelAdmin):
-    def has_add_permission(self, request, obj=None):
-        return False
-
-    def has_delete_permission(self, request, obj=None):
-        return False
+    # def has_add_permission(self, request, obj=None):
+    #     return False
+    #
+    # def has_delete_permission(self, request, obj=None):
+    #     return False
 
     list_display = ('ord_customer', 'order_date', 'ord_status')
     list_filter = ['ord_status']
-    readonly_fields = ('ord_customer', 'order_date', 'ord_status')
+    readonly_fields = ('ord_customer', 'order_date')
     inlines = [OrderItemsInline]
 
 
