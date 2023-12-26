@@ -13,8 +13,11 @@
         <a href="{% url 'login' %}?next={% url 'welcome' %}">Корзина</a>
         {% endif %}
     </header>
-    <div class="search-bar">
+
         <ul class="categories">
+            <li class="category">
+                <a href="{% url 'welcome' %}">Главная страница</a>
+            </li>
             {% for category in categories %}
             <li class="category">
                 <a href="{% url 'category_products' category.category_id %}">
@@ -22,14 +25,14 @@
             </li>
             {% endfor %}
         </ul>
-        <form id="search-form" method="get"
-              action="{% url 'search_products' %}">
-            {% csrf_token %}
-            <input type="text" id="q" name="q" placeholder="Поиск товаров">
-            <button type="submit">Поиск</button>
-        </form>
+<!--        <form id="search-form" method="get"-->
+<!--              action="{% url 'search_products' %}">-->
+<!--            {% csrf_token %}-->
+<!--            <input type="text" id="q" name="q" placeholder="Поиск товаров">-->
+<!--            <button type="submit">Поиск</button>-->
+<!--        </form>-->
 <!--        <div id="search-results"></div>-->
-    </div>
+
 </div>
 {% endblock  %}
 <!--<script>-->
