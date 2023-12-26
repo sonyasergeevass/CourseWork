@@ -6,23 +6,23 @@ from cart.forms import CartAddProductForm
 def product_detail(request, product_id):
     product = get_object_or_404(Products, pk=product_id)
     max_quantity = product.prod_amount
-    current_user = request.user
-    order_id = Orders.objects.filter(
-        ord_customer=current_user,
-        ord_status__status_name='Временный').first()
 
-    if order_id:
-        try:
-            order_item = OrderItems.objects.get(oi_order=order_id,
-                                                oi_product=product_id)
-            max_quantity -= order_item.oi_amount
-        except OrderItems.DoesNotExist:
-            pass
+    if request.user.is_authenticated:
+        current_user = request.user
+        order_id = Orders.objects.filter(
+            ord_customer=current_user,
+            ord_status__status_name='Временный').first()
+
+        if order_id:
+            try:
+                order_item = OrderItems.objects.get(oi_order=order_id,
+                                                    oi_product=product_id)
+                max_quantity -= order_item.oi_amount
+            except OrderItems.DoesNotExist:
+                pass
 
     cart_product_form = CartAddProductForm(max_quantity,
                                            initial={'quantity': 1})
-    if product.prod_photo:
-        product.prod_photo = convert_to_direct_link(product.prod_photo)
 
     return render(request, 'product_detail.html',
                   {'product': product,
@@ -34,18 +34,9 @@ def category_products(request, category_id):
     categories = categories_list()
     category = get_object_or_404(Categories, pk=category_id)
     products = Products.objects.filter(prod_category=category)
-    for product in products:
-        if product.prod_photo:
-            product.prod_photo = convert_to_direct_link(product.prod_photo)
     return render(request, 'category_products.html',
                   {'category': category, 'products': products,
                    'categories': categories})
-
-
-def convert_to_direct_link(gdrive_url):
-    if gdrive_url:
-        file_id = gdrive_url.split('/d/')[1].split('/view')[0]
-        return f'https://drive.google.com/uc?id={file_id}'
 
 
 def categories_list():
@@ -58,9 +49,6 @@ def product_list(request):
         products = Products.objects.filter(name__icontains=search_query)
     else:
         products = Products.objects.all()
-    for product in products:
-        if product.prod_photo:
-            product.prod_photo = convert_to_direct_link(product.prod_photo)
     categories = categories_list()
     return render(request, 'show_products.html',
                   {'products': products, 'categories': categories})
@@ -81,8 +69,7 @@ def user_orders(request):
             items_data.append({
                 'product_name': item.oi_product.prod_name,
                 # Замените на поле, которое содержит название товара
-                'prod_photo': convert_to_direct_link(
-                    item.oi_product.prod_photo),
+                'prod_photo': item.oi_product.prod_photo,
                 'price': item.oi_product.prod_sell_price,
                 'total_price': item.oi_product.prod_sell_price*item.oi_amount,
                 'amount': item.oi_amount
