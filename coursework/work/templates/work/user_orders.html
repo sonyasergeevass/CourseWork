@@ -1,11 +1,12 @@
 {% load static %}
 {% block content %}
-<link rel="stylesheet" href="https://unpkg.com/mvp.css">
-<h1>Ваши заказы</h1>
+{% include 'header.html' %}
+<div class="custom-content">
+<h2>Ваши заказы</h2>
 {% if orders_data %}
 {% for order in orders_data %}
-<p>Номер заказа: {{ order.order_id }}, Дата: {{order.order_date}}
-    Статус: {{ order.status }}</p>
+<h5>Номер заказа: {{ order.order_id }}.          Дата: {{order.order_date}}.
+          Статус: {{ order.status }}</h5>
 <table class="order">
     <thead>
     <tr>
@@ -22,7 +23,7 @@
         <td>
             <a href="{{ item.product.get_absolute_url }}">
                 <img src="{{ item.prod_photo }} "
-                     alt="{{ item.prod_name }}" width="170" height="180">
+                     alt="Картинка скоро появится">
             </a>
         </td>
         <td>{{ item.product_name }}</td>
@@ -33,7 +34,7 @@
     {% endfor %}
     <tr class="total">
         <td>Всего</td>
-        <td colspan="4"></td>
+        <td colspan="3"></td>
         <td class="num">{{ order.full_price }}</td>
     </tr>
     </tbody>
@@ -43,4 +44,5 @@
 <p>У вас пока нет заказов. <a href="{% url 'welcome' %}">Вернуться к покупкам</a>.
 </p>
 {% endif %}
+</div>
 {% endblock %}

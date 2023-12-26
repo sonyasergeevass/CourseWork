@@ -1,13 +1,14 @@
 {% load static %}
 {% block content %}
 {% include 'header.html' %}
-<h1>Пользователь</h1>
-<div class="user">
-   <h2>{{ user.username }}</h2>
-   <p>Email: {{ user.email }}</p>
-   <p>First Name: {{ user.first_name }}</p>
-   <p>Last Name: {{ user.last_name }}</p>
-    <a href="{% url 'user_orders' %}">Заказы</a>
-    <a href="{% url 'logout' %}">Выйти</a>
+<div class="custom-content">
+    <div class="user">
+    <img src="{{ user.photo }}"
+                     alt="Добавьте Вашу фотографию">
+       <p>{{ user.first_name }} {{ user.last_name }}</p>
+        <p>{{user.email}}</p>
+        <a href="{% url 'user_orders' %}">Заказы</a>
+        <a href="{% url 'logout' %}">Выйти</a>
+    </div>
 </div>
 {% endblock %}

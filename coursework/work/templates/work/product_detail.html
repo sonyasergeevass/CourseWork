@@ -1,20 +1,24 @@
 {% load static %}
 {% block content %}
-<div class="custom-content">
+{% include 'header.html' %}
+<div class="custom-content product-page">
     <div class="products">
-        <h1>{{ product.prod_name }}</h1>
-        <img src="{{ product.prod_photo }}" alt="{{ product.prod_name }}"
-             width="270" height="290">
-        <p>{{ product.prod_description }}</p>
-        <p>Цена: {{ product.prod_sell_price }}</p>
-        {% if max_quantity > 0 %}
-            <form action="{% url 'cart:cart_add' product.product_id %}" method="post">
-                {{ cart_product_form }}
-                {% csrf_token %}
-                <input type="submit" value="В корзину">
-            </form>
+        <img src="{{ product.prod_photo }}" alt="Картинка товара скоро появится" width="700" height="700">
+        <h2>{{ product.prod_name }}</h2>
+        <p class="description">{{ product.prod_description }}</p>
+        <h3>Цена: {{ product.prod_sell_price }} ₽</h3>
+        {% if user.is_authenticated %}
+            {% if max_quantity > 0 %}
+                <form action="{% url 'cart:cart_add' product.product_id %}" method="post">
+                    {{ cart_product_form }}
+                    {% csrf_token %}
+                    <input type="submit" value="В корзину">
+                </form>
+            {% else %}
+                <p>Извините, товар закончился.</p>
+            {% endif %}
         {% else %}
-            <p>Извините, товар закончился.</p>
+            <p>Для добавления товара в корзину, пожалуйста, <a href="{% url 'login' %}">войдите в систему</a>.</p>
         {% endif %}
     </div>
 </div>

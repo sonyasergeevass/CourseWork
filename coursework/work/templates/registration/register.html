@@ -3,9 +3,14 @@
 {% block title %} aicen {% endblock %}
 <!--{% include 'header.html' %}-->
 {% block content %}
+<div class="custom-content">
+    <div class="welcome">
+    <h1>Регистрация</h1>
+</div>
     <form method="post" action="{% url 'register' %}">
     {{ form }}
     {% csrf_token %}
      <button type="submit">Зарегистрироваться</button>
      </form>
+</div>
 {%endblock%}

@@ -7,11 +7,12 @@
         {% for product in products %}
         <div class="product">
             <a href="{% url 'product_detail' product.product_id %}">
-            <img src="{{ product.prod_photo }}" alt="{{ product.prod_name }}">
-            <div class="product-info">
-                <p>{{ product.prod_name }}</p>
-                <p>Цена: {{ product.prod_sell_price }}</p>
-            </div>
+                <img src="{{ product.prod_photo_thumbnail }}"
+                     alt="Картинка товара скоро появится">
+                <div class="product-info">
+                    <p>{{ product.prod_name }}</p>
+                    <p>Цена: {{ product.prod_sell_price }}  ₽</p>
+                </div>
         </div>
         {% endfor %}
     </div>

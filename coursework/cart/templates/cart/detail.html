@@ -4,7 +4,8 @@
 Your shopping cart
 {% endblock %}
 {% block content %}
-<link rel="stylesheet" href="https://unpkg.com/mvp.css">
+{% include 'header.html' %}
+<div class="custom-content">
 <h1>Корзина</h1>
 {% if cart_items %}
     <table class="cart">
@@ -64,38 +65,41 @@ Your shopping cart
 {% endif %}
 
 {% if out_of_stock_items %}
-<p> Товар закончился</p>
-<table class="cart">
-        <thead>
-        <tr>
-            <th>Изображение</th>
-            <th>Товар</th>
-            <th>Количество</th>
-            <th>Удалить</th>
-            <th>Цена </th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for item in out_of_stock_items %}
-        {% with product=item.product %}
-        <tr>
-            <td>
-                <a href="{{ product.get_absolute_url }}">
-                    <img src="{{ item.photo_url }} "
-                         alt="{{ product.prod_name }}" width="170" height="180">
-                </a>
-            </td>
-            <td>{{ item.oi_prod_name }}</td>
-            <td>Нет в наличии</td>
-            <td>
-                <a href="{% url 'cart:cart_remove' item.oi_product_id %}">Удалить</a>
-            </td>
-            <td class="num">{{ item.oi_prod_name.prod_sell_price }}</td>
-        </tr>
-        {% endwith %}
-        {% endfor %}
-        </tbody>
-    </table>
+    <div class="out-of_stock-items">
+    <p> Товар закончился</p>
+        <table class="cart">
+            <thead>
+            <tr>
+                <th>Изображение</th>
+                <th>Товар</th>
+                <th>Количество</th>
+                <th>Удалить</th>
+                <th>Цена </th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for item in out_of_stock_items %}
+            {% with product=item.product %}
+            <tr>
+                <td>
+                    <a href="{{ product.get_absolute_url }}">
+                        <img src="{{ item.photo_url }} "
+                             alt="{{ product.prod_name_thumbnail }}" width="170" height="180">
+                    </a>
+                </td>
+                <td>{{ item.oi_prod_name }}</td>
+                <td>Нет в наличии</td>
+                <td>
+                    <a href="{% url 'cart:cart_remove' item.oi_product_id %}">Удалить</a>
+                </td>
+                <td class="num">{{ item.oi_prod_name.prod_sell_price }}</td>
+            </tr>
+            {% endwith %}
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 {% endif %}
 
 {% endblock %}
