@@ -68,8 +68,7 @@ def user_orders(request):
         for item in order_items:
             items_data.append({
                 'product_name': item.oi_product.prod_name,
-                # Замените на поле, которое содержит название товара
-                'prod_photo': item.oi_product.prod_photo,
+                'prod_photo': item.oi_product.prod_photo_thumbnail,
                 'price': item.oi_product.prod_sell_price,
                 'total_price': item.oi_product.prod_sell_price*item.oi_amount,
                 'amount': item.oi_amount
