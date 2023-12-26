@@ -3,7 +3,7 @@ from django import forms
 
 class CartAddProductForm(forms.Form):
     quantity = forms.TypedChoiceField(choices=[], coerce=int, initial=1,
-                                      required=False)
+                                      required=False, label='Количество')
     update = forms.BooleanField(required=False, initial=False,
                                 widget=forms.HiddenInput)
 
