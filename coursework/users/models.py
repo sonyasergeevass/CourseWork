@@ -1,5 +1,9 @@
+import re
+
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 
 
@@ -22,3 +26,16 @@ class User(AbstractUser):
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
+
+
+@receiver(post_save, sender=User)
+def convert_photo_link_to_direct_link(sender, instance, created, **kwargs):
+    try:
+        if instance.photo:
+            match = re.search(r'/d/([^/]+)/view', instance.photo)
+            if match:
+                file_id = match.group(1)
+                instance.photo = ('https://drive.google.com/uc?id=' + file_id)
+                instance.save()
+    except Exception as e:
+        print(f"Произошла ошибка: {e}")
