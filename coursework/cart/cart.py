@@ -85,15 +85,15 @@ class Cart(object):
                                  f"Недостаточно товара: "
                                  f"{item.oi_product.prod_name}. Доступное "
                                  f"количестов товара для заказа "
-                                 f"{item.oi_product.prod_amount}."
-                                 )
+                                 f"{item.oi_product.prod_amount}. "
+                                 f"Количестовтовара было изменено")
                 insufficient_stock_found = True
             elif item.oi_amount == 0:
                 items_to_remove.append(item)
 
         if insufficient_stock_found:
             raise ValueError(
-                "Нажмите кнопку заказать еще раз")
+                "Нажмите кнопку Заказать еще раз")
 
         if len(items_to_remove) != 0:
             new_order = Orders.objects.create(
