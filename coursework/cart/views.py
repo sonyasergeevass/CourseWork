@@ -6,12 +6,6 @@ from .cart import Cart
 from .forms import CartAddProductForm
 
 
-def convert_to_direct_link(gdrive_url):
-    if gdrive_url:
-        file_id = gdrive_url.split('/d/')[1].split('/view')[0]
-        return f'https://drive.google.com/uc?id={file_id}'
-
-
 @require_POST
 def cart_add(request, product_id):
     cart = Cart(request.user, request)
@@ -46,9 +40,8 @@ def cart_detail(request):
             'oi_prod_name': item.oi_product,
             'oi_product_id': item.oi_product_id,
             'oi_amount': item.oi_amount,
-            'photo_url': convert_to_direct_link(item.oi_product.prod_photo),
+            'photo_url': item.oi_product.prod_photo,
             'total_price_for_item': total_price_for_item
-
         }
         if item.oi_amount > 0 and item.oi_product.prod_amount > 0:
             processed_cart_items.append(processed_item)
